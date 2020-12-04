@@ -19,3 +19,47 @@ This will start off quite simple, and hopefully get a little more complex as we 
 | [997](http://adafru.it/997) | Plastic Water Solenoid Valve - 12V - 1/2" Nominal |
 | [Pi-SPi-PROTO](https://widgetlords.com/products/pi-spi-proto-raspberry-pi-prototyping-interface) | Pi-SPi-PROTO Raspberry Pi Prototyping Interface |
 | [3099](http://adafru.it/3099) | Raspberry Pi Camera Board v2 - 8 Megapixels |
+
+
+## PI Setup
+
+In general, the software installation on the Raspberry Pi is fairly generic. However, there are a number of packges we install, as well as some important configuration changes we made in order to make things work as they should
+
+### Base Installation
+
+Grabbed the latest version of [Rasberry Pi OS](https://www.raspberrypi.org/software/). I used the "normal" desktop version (not Full), released 12/02/2020. I also used the Raspberry Pi Imager utility to "burn" the image to a 64 GB SD card.
+
+After installation and configuration (WiFi, etc.), I updated the software to ensure it had the latest versions. I also installed some basic packages:
+
+```bash
+$ sudo apt update
+$ sudo apt upgrade -y
+$ sudo apt install vim htop tmux build-essential git
+```
+
+### Protocol/Interface Support
+
+The next step is to enable the various protocols/kernel modules we will need to communicate with our collection of sensors. There are a few ways to do this, but using the in-build `raspi-config` utility is pretty easy. You can launch it by typing `sudo raspi-config` in a terminal. I then selected `Interface Options` (option 3). Here I stepped through and ensured that the following were all enabled:
+
+* Camera
+* SSH
+* VNC
+* I2C
+
+You may choose to enable/disable different interfaces as fits your setup. In general, you want to enable only those you know you are going to need, and disable all of the rest.
+
+### WiFi Issues
+
+One of the problems I had was that the Pi kept "disappearing" from the network. I am running it "headless", so this presents a problem. Each time, rebooting would immediately fix the issue. Doing some reasearch, it appears to be tied to the power management features enabled for the built-in WiFi adapter. The information online is contradictory (e.g. "this was fixed a few years ago"), but in my tests, it was still enabled and causing issues. I was able to confirm that power saving features were enabled by running the following command:
+
+```bash
+$ iw wlan0 get power_save
+Power save: on
+```
+
+I then added the line `/sbin/iwconfig wlan0 power off` to my `/etc/rc.local` file (just prior to the last line that said `exit 0`) and rebooted. After reboot, I can confirm that power saving for the WiFi is disabled:
+
+```bash
+$ iw wlan0 get power_save
+Power save: off
+```
