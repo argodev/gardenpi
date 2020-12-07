@@ -34,7 +34,7 @@ After installation and configuration (WiFi, etc.), I updated the software to ens
 ```bash
 $ sudo apt update
 $ sudo apt upgrade -y
-$ sudo apt install vim htop tmux build-essential git
+$ sudo apt install vim htop tmux build-essential git python-smbus i2c-tools
 ```
 
 ### Protocol/Interface Support
@@ -46,7 +46,7 @@ The next step is to enable the various protocols/kernel modules we will need to 
 * VNC
 * I2C
 
-You may choose to enable/disable different interfaces as fits your setup. In general, you want to enable only those you know you are going to need, and disable all of the rest.
+You may choose to enable/disable different interfaces as fits your setup. In general, you want to enable only those you know you are going to need, and disable all of the rest. With this done, its a good idea to reboot and ensure the settings have been applied.
 
 ### WiFi Issues
 
