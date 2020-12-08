@@ -48,14 +48,30 @@ class GardenPi():
         return f
 
     def normal_loop(self):
+        prev_temperature = 0
+        prev_humidity = 0
+        prev_touch = 0
+        prev_soil_temp = 0
+
         while True:
 
             # check the sensors
             now = datetime.now()
-            temperature = self._dht.temperature
-            humidity = self._dht.humidity
-            touch = self._ss.moisture_read()
-            soil_temp = self._ss.get_temp()
+            try:
+                temperature = self._dht.temperature
+                humidity = self._dht.humidity
+            except:
+                temperature = prev_temperature
+                humidity = prev_humidity
+
+            try:
+                touch = self._ss.moisture_read()
+                soil_temp = self._ss.get_temp()
+            except:
+                touch = prev_touch
+                soil_temp = prev_soil_temp
+
+            # TODO: should probably indicate if there was a sensor read error
 
             # build the display
             lcd_line_1 = "{:.1f}/{}  ".format(self._ctof(soil_temp), touch) + now.strftime('%H:%M')
@@ -69,6 +85,13 @@ class GardenPi():
         #     else:
         #         self._set_grow_light(False)
             
+            # store values for next loop
+            prev_temperature = temperature
+            prev_humidity = humidity
+            prev_touch = touch
+            prev_soil_temp = soil_temp
+
+
             # pause for awhile
             time.sleep(LOOP_DELAY)
 
