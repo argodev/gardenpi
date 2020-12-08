@@ -30,6 +30,8 @@ class GardenPi():
         self._dht = adafruit_dht.DHT22(board.D24)
         self._i2c = board.I2C()
         self._ss = Seesaw(self._i2c, addr=0x36)
+        self._min_soil = 330.0
+        self._max_soil = 578.0
         #self.grow_light = gpiozero.OutputDevice(RELAY_120_01, active_high=False, initial_value=False)
         #self.grow_light_status = False
 
@@ -42,6 +44,19 @@ class GardenPi():
     #         logging.info("Turning grow light off")
     #         self.grow_light.off()
     #         self.grow_light_status = False
+
+    def _scale_moisture(self, current):
+        # first, ensure that current is within our defined min/max
+        if current < self._min_soil:
+            current = self._min_soil
+        elif current > self._max_soil:
+            current = self._max_soil
+
+        # now, we scale it to b/t 0 and 1
+        scaled = (current-self._min_soil)/(self._max_soil - self._min_soil)
+
+        return scaled * 100
+
 
     def _ctof(self, c):
         f = ((c*9.0)/5.0) + 32
@@ -74,7 +89,7 @@ class GardenPi():
             # TODO: should probably indicate if there was a sensor read error
 
             # build the display
-            lcd_line_1 = "{:.1f}/{}  ".format(self._ctof(soil_temp), touch) + now.strftime('%H:%M')
+            lcd_line_1 = "{:.1f}/{:.1f}% ".format(self._ctof(soil_temp), self._scale_moisture(touch)) + now.strftime('%H:%M')
             lcd_line_2 = "{:.1f} *F  {:.2f}%".format(self._ctof(temperature), humidity)        
             self._lcd.write_message(lcd_line_1, lcd_line_2)
 
