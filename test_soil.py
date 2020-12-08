@@ -3,7 +3,6 @@
 
 import board
 import digitalio
-import adafruit_ssd1306
 from adafruit_seesaw.seesaw import Seesaw
 import logging
 import time
