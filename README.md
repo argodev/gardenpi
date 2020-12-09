@@ -63,3 +63,18 @@ I then added the line `/sbin/iwconfig wlan0 power off` to my `/etc/rc.local` fil
 $ iw wlan0 get power_save
 Power save: off
 ```
+
+
+## TODO
+
+Running list of items I still need to work on
+
+1. make settings available via config/ini file
+1. provide sample ini file in repo, make sure primary is excluded so it doesn't put secrets in src control
+1. make simple service for linux + instructions on installation, start/stop/restart
+1. make read water flow
+1. integate with water valve
+1. actually install on garden rack
+1. clean up test scripts (LCD/OLED)
+1. make screen/LCD optional via config file
+1. work on documentation
