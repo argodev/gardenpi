@@ -78,3 +78,13 @@ Running list of items I still need to work on
 1. clean up test scripts (LCD/OLED)
 1. make screen/LCD optional via config file
 1. work on documentation
+1. set up requirements.txt and show installation
+
+
+## Test Operation
+
+Before you configure the garden code to run all the time, you will want to test it with different sensors and configuration information. You start by creating and configuring a `settings.ini` file (a sample file, `settings.sample.ini` is provided). Once this is done, you can run the various test scripts to ensure that your devices are connected properly and reporting data as intended.
+
+
+## Normal Operation
+

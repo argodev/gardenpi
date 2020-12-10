@@ -4,15 +4,17 @@
 import time
 from datetime import datetime
 import logging
-import RPi.GPIO as GPIO
+import requests
+import configparser
+from influxdb import InfluxDBClient
+
 #import gpiozero
-import oled_pi
 import board
 import adafruit_dht
 from adafruit_seesaw.seesaw import Seesaw
-import requests
-from influxdb import InfluxDBClient
 import RPi.GPIO as GPIO
+
+import oled_pi
 
 # 120-VAC Relays
 RELAY_120_01=17
@@ -210,12 +212,31 @@ class GardenPi():
             self._lcd.clear_screen()
 
 
+def load_config(config_file='settings.ini'):
+    logging.info("Loading Configuration Information")
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    return config
+
+
+def dump_config(config):
+    """
+    Utility function to dump the configuration information
+    """
+
+
 def main():
     """Primary entry point for the application"""
     log_format = '[%(asctime)s] %(levelname)s %(message)s'
     logging.basicConfig(format=log_format, level=logging.INFO)
     logging.info('** GardenPI System Starting **')
     start_time = time.time()
+
+    config = load_config()
+    dump_config(config)
+
+    # for test/debug!
+    return
 
     garden = GardenPi()
     try:
