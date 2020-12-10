@@ -1,34 +1,51 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
-import board
-import digitalio
-from adafruit_seesaw.seesaw import Seesaw
-import logging
 import time
+import logging
+import gardenpi.utils as utils
 from datetime import datetime
-
-def ctof(c):
-    f = ((c*9.0)/5.0) + 32
-    return f
+import board
+from adafruit_seesaw.seesaw import Seesaw
 
 def main():
     """Primary entry point for the application"""
     log_format = '[%(asctime)s] %(levelname)s %(message)s'
     logging.basicConfig(format=log_format, level=logging.INFO)
-    logging.info('** GardenPI System Starting **')
+    logging.info('** GardenPI Soil Moisture Test Utility Starting **')
     start_time = time.time()
+    i2c = board.I2C()
+    sensors = []
+    mins = []
+    maxs = []
+
+    # load the config
+    config = utils.load_config()
+
+    if config['General'].getboolean('UseBay1'):
+        sensors.append(Seesaw(i2c, addr=int(config['Bay1'].get('SSAddr', 0x0), 16)))
+        mins.append(int(config['Bay1'].get('SSMin', 200)))
+        maxs.append(int(config['Bay1'].get('SSMax', 2000)))
+    if config['General'].getboolean('UseBay2'):
+        sensors.append(Seesaw(i2c, addr=int(config['Bay2'].get('SSAddr', 0x0), 16)))
+        mins.append(int(config['Bay2'].get('SSMin', 200)))
+        maxs.append(int(config['Bay2'].get('SSMax', 2000)))
+    if config['General'].getboolean('UseBay3'):
+        sensors.append(Seesaw(i2c, addr=int(config['Bay3'].get('SSAddr', 0x0), 16)))
+        mins.append(int(config['Bay3'].get('SSMin', 200)))
+        maxs.append(int(config['Bay3'].get('SSMax', 2000)))
 
     # NOTE: 200 == very dry; 2000 == very wet
-    i2c = board.I2C()
-    ss = Seesaw(i2c, addr=0x36)
-
     while True:
-       
-        touch = ss.moisture_read()
-        temp = ss.get_temp()
-        #print("temp: " + str(temp) + " moisture: " + str(touch))
-        print("Temp: {:.1f} *F \t Moisture: {}".format(ctof(temp), touch))
+        for idx, ss in enumerate(sensors):
+            try:
+                temp = utils.ctof(ss.get_temp())
+                touch = ss.moisture_read()
+                scaled = utils.scale_to_percent(touch, mins[idx], maxs[idx])
+                print("Device: {}\tTemp: {:.1f} *F\tRaw: {}\tScaled: {:.2f}%".format(idx, temp, touch, scaled))
+            except RuntimeError as e:
+                print("Reading from SS failure: ", e.args)
+
         time.sleep(2)
 
     logging.info("Script Finished")

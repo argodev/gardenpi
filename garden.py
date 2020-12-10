@@ -107,7 +107,7 @@ class GardenPi():
         password = ''
         dbname = ''
         host = ''
-        port = 8080
+        port = 8086
 
         json_body = [{
             "measurement": "gardenpi",

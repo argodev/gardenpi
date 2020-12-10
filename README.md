@@ -85,6 +85,57 @@ Running list of items I still need to work on
 
 Before you configure the garden code to run all the time, you will want to test it with different sensors and configuration information. You start by creating and configuring a `settings.ini` file (a sample file, `settings.sample.ini` is provided). Once this is done, you can run the various test scripts to ensure that your devices are connected properly and reporting data as intended.
 
+### Settings
+
+While this sounds somewhat redundant given the above, you can run the `test_config.py` script to confirm that your `settings.ini` file is where it needs to be, and that it can be read. This test simply reads the settings file and dumps all of the settings to the screen. The following is an excerpt of what you should see:
+
+```bash
+$ ./test_config.py 
+[2020-12-10 16:18:31,507] INFO ** GardenPI Configuration Test Utility **
+[2020-12-10 16:18:31,507] INFO Loading Configuration Information
+[2020-12-10 16:18:31,510] INFO ** General **
+[2020-12-10 16:18:31,510] INFO    statusloopdelay  -  10
+[2020-12-10 16:18:31,511] INFO    primaryloopdelay  -  60
+[2020-12-10 16:18:31,511] INFO    useinfluxdb  -  no
+[2020-12-10 16:18:31,511] INFO    usemoisturesensor  -  Yes
+[2020-12-10 16:18:31,512] INFO    usebay1  -  No
+```
+
+### Relays
+
+Here, you simply test the relays and ensure that they are running as they should be. What this script does is read the relay info from the configuration file and then begin an infinite loop that simply walks through each relay turning each on for 1 second before turning it off and turning the next on. You terminate this script via `Ctrl+c`
+
+```bash
+$ ./test_relays.py 
+[2020-12-10 16:56:02,430] INFO ** GardenPI Relay Test Utility **
+[2020-12-10 16:56:02,431] INFO Loading Configuration Information
+```
+
+### Temperature/Humidity Sensors
+
+With this test script, we evaluate the operation of our combined temperature/humidity sensor. The script supports up to three different garden bays and consequently three different sensors. The script will loop through and attempt to read each sensor before pausing for two seconds and then repeating.
+
+```bash
+$ ./test_temphumid.py 
+[2020-12-10 17:19:36,307] INFO ** GardenPI Temperature/Humidity Test Utility **
+[2020-12-10 17:19:36,307] INFO Loading Configuration Information
+Device: 0       Temp: 60.1 *F   Humidity: 50.40%
+Device: 0       Temp: 60.1 *F   Humidity: 50.30%
+Device: 0       Temp: 60.1 *F   Humidity: 50.30%
+```
+
+### Soil Moisture Sensors
+With this test script, we evaluate the operation of our soil mosisture sensors. The script supports up to three different garden bays and consequently three different sensors. The script will loop through and attempt to read each sensor before pausing for two seconds and then repeating. Additionally, it uses the calibration information from the config file to show the scaled measurement value.
+
+```bash
+$ ./test_soil.py 
+[2020-12-10 17:39:19,204] INFO ** GardenPI Soil Moisture Test Utility Starting **
+[2020-12-10 17:39:19,234] INFO Loading Configuration Information
+Device: 0       Temp: 62.7 *F   Raw: 670        Scaled: 97.42%
+Device: 0       Temp: 63.7 *F   Raw: 672        Scaled: 97.99%
+Device: 0       Temp: 63.3 *F   Raw: 673        Scaled: 98.28%
+Device: 0       Temp: 63.1 *F   Raw: 663        Scaled: 95.42%
+```
 
 ## Normal Operation
 
