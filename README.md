@@ -137,5 +137,12 @@ Device: 0       Temp: 63.3 *F   Raw: 673        Scaled: 98.28%
 Device: 0       Temp: 63.1 *F   Raw: 663        Scaled: 95.42%
 ```
 
+### OLED
+
+This is a simple test of the OLED screen. If the settings indicate that the OLED screen is being used (`UseOLED = Yes`), the `[OLED]` section of the configuration is then inspected for the data pins, reset, enable, etc. The screen is then turned on and it loops, showing the current date, updating the current time, and showing a ficticous temp and humidity value. The following gives an example of what it looks like:
+
+![OLED](images/oled.jpg)
+
+
 ## Normal Operation
 

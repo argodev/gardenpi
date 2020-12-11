@@ -37,15 +37,15 @@ class oled_pi():
   should go to that author. Any bugs should be assumed to be mine.
   """
 
-  def __init__(self):
+  def __init__(self, config):
     logging.info("Creating OLED object")
-    self.d4 = 6
-    self.d5 = 13
-    self.d6 = 19
-    self.d7 = 26
-    self.rw = 12
-    self.rs = 0
-    self.e = 5
+    self.d4 = int(config.get('Data4', 6))
+    self.d5 = int(config.get('Data5', 13))
+    self.d6 = int(config.get('Data6', 19))
+    self.d7 = int(config.get('Data7', 26))
+    self.rw = int(config.get('ReadWrite', 12))
+    self.rs = int(config.get('Reset', 0))
+    self.e = int(config.get('Enable', 5))
     self._initialized = False
   
   def _initialize_oled(self):
