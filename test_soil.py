@@ -22,18 +22,18 @@ def main():
     # load the config
     config = utils.load_config()
 
-    if config['General'].getboolean('UseBay1'):
-        sensors.append(Seesaw(i2c, addr=int(config['Bay1'].get('SSAddr', 0x0), 16)))
-        mins.append(int(config['Bay1'].get('SSMin', 200)))
-        maxs.append(int(config['Bay1'].get('SSMax', 2000)))
-    if config['General'].getboolean('UseBay2'):
-        sensors.append(Seesaw(i2c, addr=int(config['Bay2'].get('SSAddr', 0x0), 16)))
-        mins.append(int(config['Bay2'].get('SSMin', 200)))
-        maxs.append(int(config['Bay2'].get('SSMax', 2000)))
-    if config['General'].getboolean('UseBay3'):
-        sensors.append(Seesaw(i2c, addr=int(config['Bay3'].get('SSAddr', 0x0), 16)))
-        mins.append(int(config['Bay3'].get('SSMin', 200)))
-        maxs.append(int(config['Bay3'].get('SSMax', 2000)))
+    if config['General'].getboolean('UseShelf1'):
+        sensors.append(Seesaw(i2c, addr=int(config['Shelf1'].get('SSAddr', 0x0), 16)))
+        mins.append(int(config['Shelf1'].get('SSMin', 200)))
+        maxs.append(int(config['Shelf1'].get('SSMax', 2000)))
+    if config['General'].getboolean('UseShelf2'):
+        sensors.append(Seesaw(i2c, addr=int(config['Shelf2'].get('SSAddr', 0x0), 16)))
+        mins.append(int(config['Shelf2'].get('SSMin', 200)))
+        maxs.append(int(config['Shelf2'].get('SSMax', 2000)))
+    if config['General'].getboolean('UseShelf3'):
+        sensors.append(Seesaw(i2c, addr=int(config['Shelf3'].get('SSAddr', 0x0), 16)))
+        mins.append(int(config['Shelf3'].get('SSMin', 200)))
+        maxs.append(int(config['Shelf3'].get('SSMax', 2000)))
 
     # NOTE: 200 == very dry; 2000 == very wet
     while True:

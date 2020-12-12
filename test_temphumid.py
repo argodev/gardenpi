@@ -19,12 +19,12 @@ def main():
     # load the config
     config = utils.load_config()
 
-    if config['General'].getboolean('UseBay1'):
-        dhts.append(adafruit_dht.DHT22(int(config['Bay1'].get('DhtPin', 0))))
-    if config['General'].getboolean('UseBay2'):
-        dhts.append(adafruit_dht.DHT22(int(config['Bay2'].get('DhtPin', 0))))
-    if config['General'].getboolean('UseBay3'):
-        dhts.append(adafruit_dht.DHT22(int(config['Bay3'].get('DhtPin', 0))))
+    if config['General'].getboolean('UseShelf1'):
+        dhts.append(adafruit_dht.DHT22(int(config['Shelf1'].get('DhtPin', 0))))
+    if config['General'].getboolean('UseShelf2'):
+        dhts.append(adafruit_dht.DHT22(int(config['Shelf2'].get('DhtPin', 0))))
+    if config['General'].getboolean('UseShelf3'):
+        dhts.append(adafruit_dht.DHT22(int(config['Shelf3'].get('DhtPin', 0))))
 
     while True:
         for idx, dht in enumerate(dhts):

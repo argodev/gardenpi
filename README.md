@@ -139,7 +139,17 @@ Device: 0       Temp: 63.1 *F   Raw: 663        Scaled: 95.42%
 
 ### OLED
 
-This is a simple test of the OLED screen. If the settings indicate that the OLED screen is being used (`UseOLED = Yes`), the `[OLED]` section of the configuration is then inspected for the data pins, reset, enable, etc. The screen is then turned on and it loops, showing the current date, updating the current time, and showing a ficticous temp and humidity value. The following gives an example of what it looks like:
+This is a simple test of the OLED screen. If the settings indicate that the OLED screen is being used (`UseOLED = Yes`), the `[OLED]` section of the configuration is then inspected for the data pins, reset, enable, etc. The screen is then turned on and it loops, showing the current date, updating the current time, and showing a ficticous temp and humidity value.
+
+```bash
+ $ ./test_oled.py 
+[2020-12-10 18:02:15,815] INFO ** GardenPI OLED Test **
+[2020-12-10 18:02:15,816] INFO Loading Configuration Information
+[2020-12-10 18:02:15,820] INFO Creating OLED object
+[2020-12-10 18:02:15,821] INFO Initializing OLED
+```
+
+The following gives an example of what it looks like:
 
 ![OLED](images/oled.jpg)
 
