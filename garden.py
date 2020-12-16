@@ -9,6 +9,7 @@ import requests
 
 import gardenpi.utils as utils
 import gardenpi.shelf as shelf
+import gardenpi.oled_pi as oled_pi
 
 from influxdb import InfluxDBClient
 
@@ -17,7 +18,6 @@ import adafruit_dht
 from adafruit_seesaw.seesaw import Seesaw
 import RPi.GPIO as GPIO
 
-import oled_pi
 
 GPIO.setmode(GPIO.BCM)
 
@@ -25,6 +25,7 @@ GPIO.setmode(GPIO.BCM)
 class GardenPi():
 
     def __init__(self, config):
+        self._config = config
         if config['General'].getboolean('UseOLED'):
             self._oled = oled_pi.oled_pi(config['OLED'])
         else:
@@ -46,10 +47,10 @@ class GardenPi():
 
     def _send_to_influxdb(self, data):
         """Helper to package and send to influxdb"""
-        user = ''
-        password = ''
-        dbname = ''
-        host = ''
+        user = self._config['InfluxDB'].get('User', '')
+        password = self._config['InfluxDB'].get('Password', '')
+        dbname = self._config['InfluxDB'].get('DBname', '')
+        host = self._config['InfluxDB'].get('Host', '')
         port = 8086
 
         json_body = [{
@@ -63,6 +64,9 @@ class GardenPi():
             client = InfluxDBClient(host, port, user, password, dbname)
             client.write_points(json_body)
             client.close()
+            #DEBUG
+            print(json_body)
+
         except requests.exceptions.ConnectionError as err:
             logging.warning("Unable to post to InfluxDB")
             logging.warning(err)
@@ -88,7 +92,7 @@ class GardenPi():
                     readings.update(shelf.get_state())
 
                 # DEBUG
-                print(readings)
+                #print(readings)
                 self._send_to_influxdb(readings)
                 # TODO: send to adafruit.io!!!
             except Exception as err:
@@ -105,9 +109,9 @@ class GardenPi():
                 while remaining > 0:
                     # each iteration should alternate between one of the
                     # generated sets
-                    # lcd_line_1 = "{:.1f}/{:.1f}% ".format(self._ctof(soil_temp), self._scale_moisture(touch)) + now.strftime('%H:%M')
-                    # lcd_line_2 = "{:.1f} *F  {:.2f}%".format(self._ctof(temperature), humidity)        
-                    # self._lcd.write_message(lcd_line_1, lcd_line_2)
+                    lcd_line_1 = "{:.1f}/{:.1f}% ".format(utils.ctof(readings['shelf2_soil_temp']), readings['shelf2_moisture']) + now.strftime('%H:%M')
+                    lcd_line_2 = "{:.1f} *F  {:.2f}%".format(utils.ctof(readings['shelf2_temp']), readings['shelf2_humidity'])        
+                    self._oled.write_message(lcd_line_1, lcd_line_2)
 
                     remaining -= self._status_delay
                     time.sleep(self._status_delay)

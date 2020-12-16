@@ -4,10 +4,11 @@ import time
 from datetime import datetime
 import logging
 
-import utils
+import gardenpi.utils as utils
 
 import adafruit_dht
 from adafruit_seesaw.seesaw import Seesaw
+import RPi.GPIO as GPIO
 
 class GardenShelf():
 
@@ -16,9 +17,13 @@ class GardenShelf():
         self._dht = adafruit_dht.DHT22(int(config.get('DhtPin', 0)))
         self._light_pin = int(config.get('LightPin', 0))
         self._water_pin = int(config.get('WaterPin', 0))
-        self._soil_sensor = Seesaw(i2c, addr=int(config.get('SSAddr', 0x0), 16)
-        self._soil_min = int(config.get('SSMin', 0))
-        self._soil_max = int(config.get('SSMax', 0))
+        if config.getboolean('UseSS'):
+            self._useSS = True
+            self._soil_sensor = Seesaw(i2c, addr=int(config.get('SSAddr', 0x0), 16))
+            self._soil_min = int(config.get('SSMin', 0))
+            self._soil_max = int(config.get('SSMax', 0))
+        else:
+            self._useSS = False
         self._light_on = False
         self._water_on = False
         self._turn_light_on = int(config.get('LightOn', 0))
@@ -33,7 +38,7 @@ class GardenShelf():
         self.temperature = 0
         self.humidity = 0
         self.soil_temp = 0
-        self.mosisture = 0
+        self.moisture = 0
         self.prev_temperature = 0
         self.prev_humidity = 0
         self.prev_moisture = 0
@@ -42,7 +47,7 @@ class GardenShelf():
         self.light = 0
 
 
-    def set_grow_light(self, status):
+    def _set_grow_light(self, status):
         """
         flips the light status
         """
@@ -97,15 +102,19 @@ class GardenShelf():
             self.humidity = self.prev_humidity
 
         try:
-            self.mosisture = self._soil_sensor.moisture_read()
-            self.soil_temp = self._soil_sensor.get_temp()
+            if self._useSS:
+                self.moisture = self._soil_sensor.moisture_read()
+                self.soil_temp = self._soil_sensor.get_temp()
+            else:
+                self.moisture = 0
+                self.soil_temp = 0
         except:
             logging.error("Unable to read soil moisture sensor")
             self.mosisture = self.prev_moisture
             self.soil_temp = self.prev_soil_temp
 
         # control the grow light
-        if (now.hour >= self._start_light_hour) and (now.hour < self._stop_light_hour):
+        if (now.hour >= self._turn_light_on) and (now.hour < self._turn_light_off):
             self._set_grow_light(True)
             self.light = 1
         else:
@@ -113,14 +122,14 @@ class GardenShelf():
             self.light = 0
 
         # control the water pump
-        if self._scale_moisture(self.mosisture) < self._water_on_pct:
-            self._set_water_pump(True)
-            self.water = 1
-        elif self._scale_moisture(touch) > self._water_off_pct:
-            self._set_water_pump(False)
-            self.water = 0
-        else:
-            self.water = 1 if self._water_on else 0
+        # if self._scale_moisture(self.mosisture) < self._water_on_pct:
+        #     self._set_water_pump(True)
+        #     self.water = 1
+        # elif self._scale_moisture(touch) > self._water_off_pct:
+        #     self._set_water_pump(False)
+        #     self.water = 0
+        # else:
+        #     self.water = 1 if self._water_on else 0
 
         # store values for next loop
         self.prev_temperature = self.temperature
