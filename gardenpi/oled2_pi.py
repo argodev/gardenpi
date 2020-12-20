@@ -97,7 +97,7 @@ class oled2_pi():
         # LOW: write to LCD. HIGH: read from LCD.
         self._rw_pin = rw
         # activated by a HIGH pulse
-        self._enable_pin = enable
+        self._enable_pin = en
 
         self._data_pins = []
         self._data_pins.append(d4)
@@ -115,13 +115,15 @@ class oled2_pi():
         self._numlines = 16
         self._currline = 0
         self._initialized = False
-        self._displaycontrol = 0
+        
+        # initialize display control
+        self._displaycontrol = LCD_DISPLAY_ON | LCD_CURSOROFF | LCD_BLINKOFF
         self._displaymode = -1
 
         self.begin(self._numlines, 2)
 
 
-    def begin(self, cols, rows, character_set=LCD_JAPANESE):
+    def begin(self, cols, lines, character_set=LCD_JAPANESE):
         self._numlines = lines
         self._currline = 0
 
@@ -302,7 +304,7 @@ class oled2_pi():
         GPIO.output(self._enable_pin, GPIO.LOW)
 
 
-    def _write4bits(self):
+    def _write4bits(self, value):
         for i in range(4):
             GPIO.setup(self._data_pins[i], GPIO.OUT)
             GPIO.output(self._data_pins[i], (value >> i) & 0x01)
@@ -315,7 +317,7 @@ class oled2_pi():
         busy = 1
         GPIO.setup(self._busy_pin, GPIO.IN)
         GPIO.output(self._rs_pin, GPIO.LOW)
-        GPIO.output(slef._rw_pin, GPIO.HIGH)
+        GPIO.output(self._rw_pin, GPIO.HIGH)
         while busy:
             GPIO.output(self._enable_pin, GPIO.LOW)
             GPIO.output(self._enable_pin, GPIO.HIGH)
@@ -327,7 +329,7 @@ class oled2_pi():
             self._pulseEnable()     # get remaining 4 bits, which are not used
 
         GPIO.setup(self._busy_pin, GPIO.OUT)
-        GPIO.output(self._rw_pin, LOW)
+        GPIO.output(self._rw_pin, GPIO.LOW)
 
 
 def main():
@@ -341,7 +343,7 @@ def main():
     start_time = time.time()
 
 
-    lcd = oled2_pi()
+    lcd = oled2_pi(OLED_V2, 4, 27, 21, 13, 26, 23, 22)
     lcd.begin(16, 2)
     lcd.print("hello OLED World")
 

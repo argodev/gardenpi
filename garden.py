@@ -109,7 +109,7 @@ class GardenPi():
                 while remaining > 0:
                     # each iteration should alternate between one of the
                     # generated sets
-                    lcd_line_1 = "{:.1f}/{:.1f}% ".format(utils.ctof(readings['shelf2_soil_temp']), readings['shelf2_moisture']) + now.strftime('%H:%M')
+                    lcd_line_1 = "{:.1f}/{:.1f}% ".format(utils.ctof(readings['shelf2_soiltemp']), readings['shelf2_moisture']) + now.strftime('%H:%M')
                     lcd_line_2 = "{:.1f} *F  {:.2f}%".format(utils.ctof(readings['shelf2_temp']), readings['shelf2_humidity'])        
                     self._oled.write_message(lcd_line_1, lcd_line_2)
 

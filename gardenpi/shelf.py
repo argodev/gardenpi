@@ -35,13 +35,13 @@ class GardenShelf():
         GPIO.setup(self._light_pin, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self._water_pin, GPIO.OUT, initial=GPIO.HIGH)
 
-        self.temperature = 0
-        self.humidity = 0
-        self.soil_temp = 0
+        self.temperature = 0.0
+        self.humidity = 0.0
+        self.soil_temp = 0.0
         self.moisture = 0
-        self.prev_temperature = 0
-        self.prev_humidity = 0
-        self.prev_moisture = 0
+        self.prev_temperature = 0.0
+        self.prev_humidity = 0.0
+        self.prev_moisture = 0.0
         self.prev_soil_temp = 0
         self.water = 0
         self.light = 0
@@ -146,7 +146,7 @@ class GardenShelf():
         state = {
             self._prefix + 'temp': self.temperature,
             self._prefix + 'humidity': self.humidity,
-            self._prefix + 'soil_temp': self.soil_temp,
+            self._prefix + 'soiltemp': self.soil_temp,
             self._prefix + 'moisture': self.moisture,
             self._prefix + 'water': self.water,
             self._prefix + 'light': self.light
