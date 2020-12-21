@@ -68,7 +68,7 @@ class GardenShelf():
             self._light_on = False
 
 
-    def set_water_pump(self, status):
+    def _set_water_pump(self, status):
         """
         flips the water pump
         """
