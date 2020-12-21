@@ -30,6 +30,8 @@ class GardenShelf():
         self._turn_light_off = int(config.get('LightOff', 0))
         self._water_on_pct = int(config.get('MoistureOnPct',25))
         self._water_off_pct = int(config.get('MoistureOffPct', 75))
+        self._water_on_time = datetime.strptime(config.get('WaterOnTime', '00:00'), '%H:%M').time()
+        self._water_off_time = datetime.strptime(config.get('WaterOffTime', '00:00'), '%H:%M').time()
         self._prefix = config.get('Prefix', '')
 
         GPIO.setup(self._light_pin, GPIO.OUT, initial=GPIO.HIGH)
@@ -122,6 +124,15 @@ class GardenShelf():
             self.light = 0
 
         # control the water pump
+        # NOTE: We would like to maybe do this based on the moisture reading, but that
+        # seems to be a bit inconsistent. For now, we will use a simple daily timer
+        if (now.time() >= self._water_on_time) and (now.time() < self._water_off_time):
+            self._set_water_pump(True)
+            self.water = 1
+        else:
+            self._set_water_pump(False)
+            self.water = 0
+
         # if self._scale_moisture(self.mosisture) < self._water_on_pct:
         #     self._set_water_pump(True)
         #     self.water = 1
