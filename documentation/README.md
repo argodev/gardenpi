@@ -5,7 +5,7 @@ These pages serve to document the work done on GardenPi. The primary audience fo
 This document is organized as follows:
 
 * [Configuring the Raspberry Pi](RaspberryPi.md)
-* [Electrical Configuraiton](Electrical.md)
+* [Electrical Configuration](Electrical.md)
 * Configuring the Sensors
 * Building/Configuring the Garden
 * Configuring Water/Irrigation
