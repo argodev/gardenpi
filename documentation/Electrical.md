@@ -18,4 +18,4 @@ I am able to control the top/bottom half of the individual outlets independental
 
 ![Outlet Tab](/images/outlet01.jpg | width=100px)
 
-![Outlet No Tab](/images/outlet02.jpg | width=100px)
+<img src="/images/outlet02.jpg" width="100">
