@@ -16,5 +16,4 @@ The 120 VAC ("Mains") power support is wired in a similar fashion as the 12VDC v
 
 I am able to control the top/bottom half of the individual outlets independentaly due to having broken the connection tab between the top/bottom outlets and then wiring them separately. The following images show the normal tab as well as it broken to allow independent operation.
 
-<img src="/images/outlet01.jpg" width="300">
-<img src="/images/outlet02.jpg" width="300">
+<img src="/images/outlet01.jpg" width="300"> <img src="/images/outlet02.jpg" width="300">
